@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pibes de Barrio - Sumate a la Mesa</title>
+    <style>
+        :root {
+            --primary: #B40000;
+            --primary-hover: #D60000;
+            --bg-dark: #121212;
+            --text-light: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --glass-bg: rgba(30, 30, 30, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Fondo Decorativo Urbano */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(180, 0, 0, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(40, 40, 40, 0.5) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 540px;
+            margin: 0 auto;
+            padding: 24px 16px 112px 16px;
+        }
+
+        /* Header Estilo Flyer */
+        header {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-top: 18px;
+        }
+
+        .logo-area {
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .logo-title {
+            font-size: 40px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -1.5px;
+            color: var(--text-light);
+            line-height: 1.1;
+            text-wrap: balance;
+        }
+
+        .logo-title span {
+            color: var(--primary);
+            display: block;
+            font-size: 44px;
+        }
+
+        .tagline {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-top: 14px;
+            display: inline-block;
+            padding: 7px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(180, 0, 0, 0.22);
+            background: rgba(180, 0, 0, 0.08);
+        }
+
+        .hero-lead {
+            max-width: 34ch;
+            margin: 18px auto 0 auto;
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.5;
+            color: rgba(245, 245, 245, 0.92);
+        }
+
+        .hero-proof {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .proof-chip {
+            padding: 9px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 12px;
+            font-weight: 700;
+            color: #E6E6E6;
+        }
+
+        .hero-cta {
+            margin-top: 22px;
+        }
+
+        /* Tarjetas Glassmorphism */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 14px;
+            color: var(--text-light);
+            line-height: 1.2;
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--text-light);
+            opacity: 0.9;
+            margin-bottom: 14px;
+        }
+
+        .section-kicker {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--primary);
+        }
+
+        .video-card {
+            overflow: hidden;
+        }
+
+        .video-copy {
+            max-width: 42ch;
+            margin-bottom: 0;
+        }
+
+        .video-frame {
+            position: relative;
+            aspect-ratio: 9 / 16;
+            max-width: 360px;
+            margin: 18px auto 0 auto;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+            background:
+                radial-gradient(circle at top, rgba(180, 0, 0, 0.14), transparent 45%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+        }
+
+        .video-frame iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: #101010;
+        }
+
+        /* Cajas de los Combos */
+        .combo-box {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .combo-box.featured {
+            border-color: rgba(180, 0, 0, 0.4);
+            background: linear-gradient(180deg, rgba(180, 0, 0, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .combo-badge {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(180, 0, 0, 0.16);
+            color: #FFD3D3;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .combo-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .combo-badges .combo-badge {
+            margin-bottom: 0;
+        }
+
+        .combo-badge.selection {
+            background: rgba(255, 255, 255, 0.08);
+            color: #F1F1F1;
+        }
+
+        .combo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 8px;
+        }
+
+        .combo-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-light);
+        }
+
+        .combo-price {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .combo-note {
+            margin-top: 14px;
+            margin-bottom: 0;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .brand-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .brand-item.featured {
+            transform: translateY(-2px);
+        }
+
+        .brand-logo-slot {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            width: 100%;
+            min-height: 74px;
+            aspect-ratio: 4 / 3;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.045);
+        }
+
+        .brand-item.featured .brand-logo-slot {
+            min-height: 86px;
+            border-color: rgba(180, 0, 0, 0.35);
+            background: linear-gradient(180deg, rgba(180, 0, 0, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+        }
+
+        .brand-logo-slot img {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+            padding: 10px;
+        }
+
+        .brand-logo--club {
+            padding: 8px;
+            transform: scale(0.96);
+        }
+
+        .brand-logo--baco {
+            padding: 8px;
+            transform: scale(1.03);
+        }
+
+        .brand-logo--dama {
+            padding: 4px 14px;
+            transform: scale(1.12);
+        }
+
+        .brand-logo--aura {
+            padding: 6px;
+            transform: scale(1.15);
+        }
+
+        .brand-logo--alta {
+            padding: 10px;
+            transform: scale(0.93);
+        }
+
+        .brand-logo--rincon {
+            padding: 7px;
+            transform: scale(1.02);
+        }
+
+        .brand-logo--sista {
+            padding: 10px;
+            transform: scale(0.92);
+        }
+
+        .brand-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .brand-ig {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-light);
+            transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .brand-ig:hover {
+            background: rgba(180, 0, 0, 0.12);
+            border-color: rgba(180, 0, 0, 0.28);
+            transform: translateY(-1px);
+        }
+
+        .brand-item.featured .brand-ig {
+            border-color: rgba(180, 0, 0, 0.28);
+            background: rgba(180, 0, 0, 0.12);
+        }
+
+        .brand-ig svg {
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        li {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding-left: 22px;
+            position: relative;
+            color: #E0E0E0;
+        }
+
+        li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: 900;
+        }
+
+        /* Botón de Acción Directo a WhatsApp */
+        .btn-whatsapp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary);
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 800;
+            padding: 18px 20px;
+            border-radius: 14px;
+            text-align: center;
+            margin-top: 28px;
+            transition: background 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 10px 24px rgba(180, 0, 0, 0.32);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+        }
+
+        .btn-whatsapp:active {
+            transform: scale(0.98);
+            background-color: var(--primary-hover);
+        }
+
+        .sticky-cta {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 20;
+            padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+            background: linear-gradient(180deg, rgba(18, 18, 18, 0) 0%, rgba(18, 18, 18, 0.96) 35%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .pibes-assistant {
+            position: fixed;
+            right: 16px;
+            bottom: 96px;
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .pibes-assistant-button {
+            border: 0;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #D60000 0%, #8C0000 100%);
+            color: var(--text-light);
+            padding: 14px 18px;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            box-shadow: 0 18px 30px rgba(0, 0, 0, 0.32);
+            cursor: pointer;
+        }
+
+        .pibes-assistant-panel {
+            width: min(360px, calc(100vw - 32px));
+            max-height: min(560px, calc(100vh - 180px));
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(18, 18, 18, 0.94);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .pibes-assistant.open .pibes-assistant-panel {
+            display: flex;
+        }
+
+        .pibes-assistant-header {
+            padding: 16px 18px 12px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: linear-gradient(180deg, rgba(180, 0, 0, 0.18), rgba(180, 0, 0, 0.04));
+        }
+
+        .pibes-assistant-eyebrow {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #FFB3B3;
+        }
+
+        .pibes-assistant-title {
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.15;
+        }
+
+        .pibes-assistant-subtitle {
+            margin-top: 6px;
+            font-size: 13px;
+            color: rgba(245, 245, 245, 0.78);
+        }
+
+        .pibes-assistant-body {
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .pibes-thread {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .pibes-message {
+            max-width: 92%;
+            padding: 12px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        .pibes-message.bot {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(245, 245, 245, 0.92);
+        }
+
+        .pibes-message.user {
+            align-self: flex-end;
+            background: rgba(180, 0, 0, 0.22);
+            border: 1px solid rgba(180, 0, 0, 0.28);
+            color: #FFF1F1;
+        }
+
+        .pibes-assistant-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .pibes-chip {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-light);
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .pibes-assistant-form {
+            display: flex;
+            gap: 8px;
+            padding: 14px 16px 16px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .pibes-assistant-input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-light);
+            padding: 12px 14px;
+            font-size: 14px;
+        }
+
+        .pibes-assistant-input::placeholder {
+            color: rgba(245, 245, 245, 0.45);
+        }
+
+        .pibes-assistant-send {
+            border: 0;
+            border-radius: 12px;
+            background: var(--primary);
+            color: var(--text-light);
+            min-width: 52px;
+            padding: 0 16px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .pibes-assistant-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 12px;
+            color: #FFD3D3;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .pibes-assistant-link:hover {
+            text-decoration: underline;
+        }
+
+        .sticky-cta .btn-whatsapp {
+            margin-top: 0;
+            font-size: 15px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 32px;
+        }
+
+        @media (min-width: 641px) {
+            .sticky-cta {
+                display: none;
+            }
+
+            .pibes-assistant {
+                bottom: 24px;
+            }
+
+            .container {
+                padding-bottom: 48px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            header {
+                margin-bottom: 24px;
+            }
+
+            .logo-title {
+                font-size: 34px;
+            }
+
+            .logo-title span {
+                font-size: 38px;
+            }
+
+            .hero-lead {
+                font-size: 16px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .combo-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .brands-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .video-frame {
+                max-width: 100%;
+            }
+
+            .pibes-assistant {
+                right: 12px;
+                bottom: 92px;
+            }
+
+            .pibes-assistant-button {
+                padding: 13px 16px;
+            }
+
+            .pibes-assistant-panel {
+                width: min(100vw - 24px, 360px);
+                max-height: min(70vh, 520px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo-area">
+                <div class="eyebrow">Club 5 de Mayo · Ensenada</div>
+                <h1 class="logo-title">Pibes <span>De Barrio</span></h1>
+                <div class="tagline">La juntada de los jueves en Ensenada</div>
+                <p class="hero-lead">Una mesa bien del barrio para mostrar negocios, artistas y proyectos locales con contenido que se mueve de verdad.</p>
+                <div class="hero-proof">
+                    <span class="proof-chip">Producción local</span>
+                    <span class="proof-chip">Presencia en redes</span>
+                    <span class="proof-chip">Invitación al estudio</span>
+                </div>
+                <div class="hero-cta">
+                    <a href="https://wa.me/5492215047962?text=Hola%20Braian%2C%20vi%20la%20web%20de%20Pibes%20de%20Barrio%20y%20quiero%20sumarme%20con%20el%20bono%20contribuci%C3%B3n.%20%C2%BFMe%20cont%C3%A1s%20c%C3%B3mo%20arrancamos%3F" class="btn-whatsapp" target="_blank" rel="noopener noreferrer">
+                        🤝 Quiero sumarme ahora
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <section class="card">
+            <span class="section-kicker">Quiénes somos</span>
+            <h2>El barrio apoya al barrio</h2>
+            <p>¡Hola! Somos Jonatan y Braian. Creamos <strong>Pibes de Barrio</strong> desde el quincho del Club 5 de Mayo con una idea fija: darle pantalla y micrófono a los músicos, artistas y emprendedores de nuestra ciudad que la reman todos los días.</p>
+            <p>Lanzamos el primer programa y la respuesta de Ensenada fue increíble. Pero para que este espacio siga creciendo y se mantenga en el tiempo, necesitamos hacerlo entre todos. No podemos solos.</p>
+        </section>
+
+        <section class="card video-card">
+            <span class="section-kicker">Video</span>
+            <h2>Mirá cómo se vive Pibes de Barrio</h2>
+            <p class="video-copy">Esto no es una promesa: es una muestra real de lo que ya pasa en Pibes de Barrio. Mirá el programa desde adentro y entendé en segundos el alcance, la identidad y la energía de la mesa.</p>
+            <div class="video-frame">
+                <iframe
+                    src="https://www.instagram.com/p/DYasYqvOkkF/embed"
+                    title="Reel completo de Instagram de Pibes de Barrio"
+                    loading="lazy"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </section>
+
+        <section class="card">
+            <span class="section-kicker">Cómo funciona</span>
+            <h2>¿De qué se trata esto?</h2>
+            <p>No te venimos a vender publicidad vacía. Te proponemos sumarte a la comunidad a través de un <strong>Bono Contribución</strong> mensual.</p>
+            <p>Con este aporte nos ayudás a bancar los gastos técnicos de producción (cámaras, luces, micrófonos) y el espacio que nos presta el club. A cambio de tu confianza, nosotros nos encargamos de que toda Ensenada conozca tu laburo devolviéndote ese apoyo con beneficios reales.</p>
+        </section>
+
+        <section class="card">
+            <span class="section-kicker">Planes</span>
+            <h2>Formas de Colaborar</h2>
+            
+            <div class="combo-box">
+                <div class="combo-badges">
+                    <div class="combo-badge selection">Seleccion</div>
+                </div>
+                <div class="combo-header">
+                    <span class="combo-title">Bono Amigo del Barrio</span>
+                    <span class="combo-price">$30.000 / mes</span>
+                </div>
+                <ul>
+                    <li>Mención y agradecimiento en 2 programas completos al mes (YouTube, Instagram y TikTok).</li>
+                    <li>Presencia fija de tu negocio en los Reels y Shorts que subimos en la semana para que tu marca siga girando.</li>
+                    <li><strong>Invitación al estudio:</strong> Te venís un jueves al quincho, compartís un chori y un trago con nosotros, y tenés el micrófono libre para contar tu historia.</li>
+                </ul>
+                <p class="combo-note">Ideal si querés presencia constante en el contenido y un vínculo real con la comunidad.</p>
+            </div>
+
+            <div class="combo-box featured">
+                <div class="combo-badges">
+                    <div class="combo-badge">Recomendado</div>
+                    <div class="combo-badge selection">Seleccion</div>
+                </div>
+                <div class="combo-header">
+                    <span class="combo-title">Bono Impulso</span>
+                    <span class="combo-price">+$30.000 (Opcional)</span>
+                </div>
+                <p style="font-size: 13px; margin: 8px 0; color: var(--text-muted);">Sumalo al bono básico si necesitás material profesional para tus propias redes:</p>
+                <ul>
+                    <li>Vamos a tu local y te grabamos un video publicitario bien picante, editado con calidad profesional.</li>
+                    <li>Te diseñamos un Flyer de ventas personalizado con tus ofertas listo para explotar en tus estados de WhatsApp.</li>
+                </ul>
+            </div>
+
+            <a href="https://wa.me/5492215047962?text=Hola%20Braian%2C%20vi%20la%20web%20de%20Pibes%20de%20Barrio%20y%20quiero%20sumarme%20con%20el%20bono%20contribuci%C3%B3n.%20%C2%BFMe%20cont%C3%A1s%20c%C3%B3mo%20arrancamos%3F" class="btn-whatsapp" target="_blank" rel="noopener noreferrer">
+                🤝 Quiero sumarme por WhatsApp
+            </a>
+        </section>
+
+        <section class="card">
+            <span class="section-kicker">Comunidad</span>
+            <h2>Marcas que nos apoyan</h2>
+            <p>Estas marcas ya son parte de la mesa.</p>
+
+            <div class="brands-grid">
+                <article class="brand-item featured">
+                    <div class="brand-logo-slot">
+                        <img class="brand-logo--club" src="assets/logos/assets_logos_club-de-jarras.png" alt="Logo de Club de Jarras">
+                    </div>
+                    <div class="brand-links">
+                        <a class="brand-ig" href="https://www.instagram.com/clubdejarras/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Club de Jarras">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5zm5.38-2.57a1.19 1.19 0 1 1 0 2.38 1.19 1.19 0 0 1 0-2.38z"/></svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="brand-item">
+                    <div class="brand-logo-slot">
+                        <img class="brand-logo--baco" src="assets/logos/assets_logos_baco-pollajeria.png" alt="Logo de Baco Pollajeria">
+                    </div>
+                    <div class="brand-links">
+                        <a class="brand-ig" href="https://www.instagram.com/baco_pollajeria/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Baco Pollajeria">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5zm5.38-2.57a1.19 1.19 0 1 1 0 2.38 1.19 1.19 0 0 1 0-2.38z"/></svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="brand-item featured">
+                    <div class="brand-logo-slot">
+                        <img class="brand-logo--dama" src="assets/logos/assets_logos_la-dama-del-10.png" alt="Logo de La dama del 10">
+                    </div>
+                    <div class="brand-links">
+                        <a class="brand-ig" href="https://www.instagram.com/ladamadeldiez/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de La dama del 10">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5zm5.38-2.57a1.19 1.19 0 1 1 0 2.38 1.19 1.19 0 0 1 0-2.38z"/></svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="brand-item">
+                    <div class="brand-logo-slot">
+                        <img class="brand-logo--aura" src="assets/logos/assets_logos_aura-basic.png" alt="Logo de AuraBasic">
+                    </div>
+                    <div class="brand-links">
+                        <a class="brand-ig" href="https://www.instagram.com/aurabasic_ind/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de AuraBasic">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5zm5.38-2.57a1.19 1.19 0 1 1 0 2.38 1.19 1.19 0 0 1 0-2.38z"/></svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="brand-item">
+                    <div class="brand-logo-slot">
+                        <img class="brand-logo--alta" src="assets/logos/assets_logos_alta-barra.png" alt="Logo de AltaBarra">
+                    </div>
+                    <div class="brand-links">
+                        <a class="brand-ig" href="https://www.instagram.com/alta.barra.al/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de AltaBarra">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5zm5.38-2.57a1.19 1.19 0 1 1 0 2.38 1.19 1.19 0 0 1 0-2.38z"/></svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="brand-item">
+                    <div class="brand-logo-slot">
+                        <img class="brand-logo--rincon" src="assets/logos/assets_logos_el-rincon-de-las-bebidas.png" alt="Logo de El Rincon de las bebidas">
+                    </div>
+                    <div class="brand-links">
+                        <a class="brand-ig" href="https://www.instagram.com/elrincon.ense/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de El Rincon de las bebidas">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5zm5.38-2.57a1.19 1.19 0 1 1 0 2.38 1.19 1.19 0 0 1 0-2.38z"/></svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="brand-item featured">
+                    <div class="brand-logo-slot">
+                        <img class="brand-logo--sista" src="assets/logos/assets_logos_sista.png" alt="Logo de SISTA">
+                    </div>
+                    <div class="brand-links">
+                        <a class="brand-ig" href="https://www.instagram.com/sista.internet/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de SISTA">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5a4.25 4.25 0 0 0 4.25 4.25h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5zm5.38-2.57a1.19 1.19 0 1 1 0 2.38 1.19 1.19 0 0 1 0-2.38z"/></svg>
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <footer>
+            <p>Pibes de Barrio &copy; 2026 - Desde el Club 5 de Mayo, Ensenada.</p>
+        </footer>
+    </div>
+
+    <div class="pibes-assistant" data-pibes-assistant>
+        <div class="pibes-assistant-panel" id="pibes-panel" aria-live="polite">
+            <div class="pibes-assistant-header">
+                <span class="pibes-assistant-eyebrow">Asistente</span>
+                <div class="pibes-assistant-title">Pibes</div>
+                <p class="pibes-assistant-subtitle">Te respondo las preguntas más comunes sobre la mesa, el lugar y cómo sumarte.</p>
+            </div>
+            <div class="pibes-assistant-body">
+                <div class="pibes-thread" data-pibes-thread>
+                    <div class="pibes-message bot">Soy Pibes. Preguntame por asistencia, quién puede venir, si te podés acercar al lugar o cómo sumarte.</div>
+                </div>
+                <div class="pibes-assistant-questions">
+                    <button class="pibes-chip" type="button" data-question="¿Puede asistir cualquiera?">¿Puede asistir cualquiera?</button>
+                    <button class="pibes-chip" type="button" data-question="¿Me puedo acercar al lugar?">¿Me puedo acercar al lugar?</button>
+                    <button class="pibes-chip" type="button" data-question="¿Es solo para marcas?">¿Es solo para marcas?</button>
+                    <button class="pibes-chip" type="button" data-question="¿Cómo me sumo?">¿Cómo me sumo?</button>
+                </div>
+                <a class="pibes-assistant-link" href="https://wa.me/5492215047962?text=Hola%20Braian%2C%20tengo%20una%20consulta%20sobre%20Pibes%20de%20Barrio" target="_blank" rel="noopener noreferrer">Si necesitás una respuesta directa, hablá por WhatsApp</a>
+            </div>
+            <form class="pibes-assistant-form" data-pibes-form>
+                <input class="pibes-assistant-input" type="text" name="question" placeholder="Escribí tu consulta" autocomplete="off">
+                <button class="pibes-assistant-send" type="submit">Enviar</button>
+            </form>
+        </div>
+        <button class="pibes-assistant-button" type="button" aria-expanded="false" aria-controls="pibes-panel" data-pibes-toggle>Pibes</button>
+    </div>
+
+    <div class="sticky-cta">
+        <a href="https://wa.me/5492215047962?text=Hola%20Braian%2C%20vi%20la%20web%20de%20Pibes%20de%20Barrio%20y%20quiero%20sumarme%20con%20el%20bono%20contribuci%C3%B3n.%20%C2%BFMe%20cont%C3%A1s%20c%C3%B3mo%20arrancamos%3F" class="btn-whatsapp" target="_blank" rel="noopener noreferrer">
+            🤝 Hablar por WhatsApp
+        </a>
+    </div>
+
+    <script>
+        (function () {
+            var assistant = document.querySelector('[data-pibes-assistant]');
+
+            if (!assistant) {
+                return;
+            }
+
+            var toggle = assistant.querySelector('[data-pibes-toggle]');
+            var panel = document.getElementById('pibes-panel');
+            var thread = assistant.querySelector('[data-pibes-thread]');
+            var form = assistant.querySelector('[data-pibes-form]');
+            var input = form.querySelector('input[name="question"]');
+            var chips = assistant.querySelectorAll('[data-question]');
+
+            var faq = [
+                {
+                    triggers: ['asistir', 'asistencia', 'ir', 'participar', 'puede asistir'],
+                    answer: 'Sí, puede venir cualquiera con ganas de acercarse a la mesa. Pibes de Barrio está pensado para vecinos, artistas, emprendedores y marcas que quieran ser parte del movimiento.'
+                },
+                {
+                    triggers: ['cualquiera', 'para todos', 'publico', 'quien puede ir'],
+                    answer: 'Sí. No es un espacio cerrado ni exclusivo para marcas grandes. La idea es abrir micrófono y pantalla a gente real del barrio que quiera conectar con la comunidad.'
+                },
+                {
+                    triggers: ['lugar', 'acercar', 'acercarme', 'club', '5 de mayo', 'direccion', 'caer'],
+                    answer: 'Sí, te podés acercar al Club 5 de Mayo en Ensenada. Si querés ir un jueves o coordinar una visita, escribinos por WhatsApp así te confirmamos el mejor momento.'
+                },
+                {
+                    triggers: ['marca', 'negocio', 'emprendimiento', 'solo para marcas'],
+                    answer: 'No. Pibes de Barrio no es solo para marcas: también se suman artistas, proyectos locales y gente del barrio. Si tenés un negocio o emprendimiento, además podés entrar con los bonos de apoyo.'
+                },
+                {
+                    triggers: ['sumo', 'sumarme', 'precio', 'costo', 'bono', 'whatsapp'],
+                    answer: 'La forma más directa de sumarte es escribir por WhatsApp. Ahí te explican los bonos, qué incluye cada opción y cómo arrancar según lo que necesites.'
+                }
+            ];
+
+            function appendMessage(text, role) {
+                var message = document.createElement('div');
+                message.className = 'pibes-message ' + role;
+                message.textContent = text;
+                thread.appendChild(message);
+                thread.scrollTop = thread.scrollHeight;
+                panel.querySelector('.pibes-assistant-body').scrollTop = panel.querySelector('.pibes-assistant-body').scrollHeight;
+            }
+
+            function getAnswer(question) {
+                var normalized = question.toLowerCase();
+
+                for (var i = 0; i < faq.length; i += 1) {
+                    for (var j = 0; j < faq[i].triggers.length; j += 1) {
+                        if (normalized.indexOf(faq[i].triggers[j]) !== -1) {
+                            return faq[i].answer;
+                        }
+                    }
+                }
+
+                return 'Todavía respondo consultas puntuales sobre asistencia, lugar, público y cómo sumarte. Probá con preguntas como “¿Puede asistir cualquiera?” o “¿Me puedo acercar al lugar?”.';
+            }
+
+            function handleQuestion(question) {
+                if (!question) {
+                    return;
+                }
+
+                appendMessage(question, 'user');
+                appendMessage(getAnswer(question), 'bot');
+            }
+
+            function closeAssistant() {
+                assistant.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+
+            toggle.addEventListener('click', function () {
+                var isOpen = assistant.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+                if (isOpen) {
+                    input.focus();
+                }
+            });
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                var question = input.value.trim();
+
+                if (!question) {
+                    return;
+                }
+
+                handleQuestion(question);
+                input.value = '';
+            });
+
+            chips.forEach(function (chip) {
+                chip.addEventListener('click', function () {
+                    handleQuestion(chip.getAttribute('data-question'));
+                });
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!assistant.classList.contains('open')) {
+                    return;
+                }
+
+                if (!assistant.contains(event.target)) {
+                    closeAssistant();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closeAssistant();
+                }
+            });
+        }());
+    </script>
+
+</body>
+</html>
