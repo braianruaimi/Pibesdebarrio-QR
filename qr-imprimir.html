@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR para imprimir - Pibes de Barrio</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 12mm;
+        }
+
+        :root {
+            --paper: #f6f1ea;
+            --ink: #141414;
+            --muted: #59544e;
+            --accent: #b40000;
+            --accent-dark: #7a0000;
+            --frame: #e6ddd1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family: Arial, sans-serif;
+            color: var(--ink);
+            background: var(--paper);
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12mm;
+        }
+
+        .poster {
+            position: relative;
+            width: 186mm;
+            min-height: 273mm;
+            overflow: hidden;
+            border: 1.5mm solid var(--ink);
+            border-radius: 8mm;
+            background:
+                radial-gradient(circle at top left, rgba(180, 0, 0, 0.12), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(180, 0, 0, 0.08), transparent 24%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.88));
+            box-shadow: 0 0 0 2.5mm rgba(255, 255, 255, 0.58) inset;
+        }
+
+        .poster::before,
+        .poster::after {
+            content: "";
+            position: absolute;
+            width: 46mm;
+            height: 46mm;
+            border-radius: 999px;
+            background: rgba(180, 0, 0, 0.08);
+            filter: blur(2px);
+        }
+
+        .poster::before {
+            top: -12mm;
+            right: -8mm;
+        }
+
+        .poster::after {
+            left: -16mm;
+            bottom: 18mm;
+        }
+
+        .poster-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 273mm;
+            padding: 16mm 14mm 14mm;
+            text-align: center;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 2.5mm 5mm;
+            border: 0.45mm solid rgba(20, 20, 20, 0.12);
+            border-radius: 999px;
+            font-size: 3.2mm;
+            font-weight: 800;
+            letter-spacing: 0.45mm;
+            text-transform: uppercase;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.52);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 7mm;
+        }
+
+        .brand-logo {
+            display: block;
+            width: 58mm;
+            height: auto;
+            filter: drop-shadow(0 3mm 6mm rgba(0, 0, 0, 0.12));
+        }
+
+        .headline {
+            max-width: 130mm;
+            margin: 8mm auto 0;
+            font-size: 8.4mm;
+            font-weight: 900;
+            line-height: 1.02;
+            letter-spacing: -0.25mm;
+            text-transform: uppercase;
+        }
+
+        .subhead {
+            max-width: 118mm;
+            margin: 5mm auto 0;
+            font-size: 4.4mm;
+            line-height: 1.45;
+            color: var(--muted);
+        }
+
+        .qr-wrap {
+            width: 100%;
+            margin: 10mm 0 8mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-card {
+            width: 92mm;
+            padding: 7mm;
+            border-radius: 7mm;
+            border: 0.8mm solid var(--frame);
+            background: #ffffff;
+            box-shadow:
+                0 1.8mm 0 rgba(20, 20, 20, 0.06),
+                0 7mm 18mm rgba(20, 20, 20, 0.1);
+        }
+
+        .qr-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .scan-text {
+            margin-top: 6mm;
+            font-size: 4.6mm;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.24mm;
+            color: var(--accent-dark);
+        }
+
+        .bottom {
+            width: 100%;
+        }
+
+        .url {
+            margin: 0 auto;
+            max-width: 130mm;
+            padding: 3.2mm 4.5mm;
+            border-radius: 999px;
+            background: rgba(20, 20, 20, 0.06);
+            font-size: 4mm;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--ink);
+            word-break: break-all;
+        }
+
+        .note {
+            margin-top: 4.2mm;
+            font-size: 3.4mm;
+            line-height: 1.45;
+            color: var(--muted);
+        }
+
+        @media screen {
+            body {
+                padding: 24px;
+            }
+
+            .poster {
+                width: min(186mm, calc(100vw - 48px));
+                min-height: min(273mm, calc(100vh - 48px));
+            }
+
+            .poster-inner {
+                min-height: min(273mm, calc(100vh - 48px));
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="poster">
+        <div class="poster-inner">
+            <section>
+                <span class="eyebrow">Club 5 de Mayo · Ensenada</span>
+                <div class="brand">
+                    <img class="brand-logo" src="assets/logos/pibesdebarrio.jpg" alt="Logo de Pibes de Barrio">
+                </div>
+                <h1 class="headline">Escaneá y sumate a la mesa</h1>
+                <p class="subhead">Conocé el proyecto, mirá cómo se vive el programa y escribinos para participar, apoyar o acercarte al lugar.</p>
+            </section>
+
+            <section class="qr-wrap">
+                <div class="qr-card">
+                    <img src="assets/qr/pibesdebarrio-landing-qr.png" alt="QR para acceder a la landing de Pibes de Barrio">
+                    <div class="scan-text">Apuntá la cámara acá</div>
+                </div>
+            </section>
+
+            <section class="bottom">
+                <p class="url">https://braianruaimi.github.io/Pibesdebarrio-QR/</p>
+                <p class="note">Formato A4 listo para imprimir. Si querés pegarlo en comercios o eventos, imprimilo al 100% de escala para que el QR conserve buen contraste.</p>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
