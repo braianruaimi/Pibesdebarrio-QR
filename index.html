@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#121212">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Pibes de Barrio">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/pwa/icon-192.png">
+    <link rel="apple-touch-icon" href="assets/pwa/icon-192.png">
     <title>Pibes de Barrio - Sumate a la Mesa</title>
     <style>
         :root {
@@ -32,6 +39,10 @@
             overflow-x: hidden;
         }
 
+        body.is-loading {
+            overflow: hidden;
+        }
+
         /* Fondo Decorativo Urbano */
         body::before {
             content: "";
@@ -53,6 +64,48 @@
             padding: 24px 16px 112px 16px;
         }
 
+        .intro-splash {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(180, 0, 0, 0.18) 0%, transparent 38%),
+                radial-gradient(circle at 80% 70%, rgba(40, 40, 40, 0.42) 0%, transparent 48%),
+                rgba(18, 18, 18, 0.98);
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.45s ease, visibility 0.45s ease;
+        }
+
+        .intro-splash.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .intro-splash-logo {
+            width: min(340px, 80vw);
+            height: auto;
+            filter: drop-shadow(0 20px 34px rgba(0, 0, 0, 0.34));
+            animation: introPulse 0.9s ease-out both;
+        }
+
+        @keyframes introPulse {
+            from {
+                opacity: 0;
+                transform: scale(0.88);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         /* Header Estilo Flyer */
         header {
             text-align: center;
@@ -61,8 +114,17 @@
         }
 
         .logo-area {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 12px;
+        }
+
+        .hero-logo {
+            width: min(220px, 62vw);
+            height: auto;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.28));
         }
 
         .eyebrow {
@@ -186,11 +248,20 @@
             margin-bottom: 0;
         }
 
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 18px;
+            align-items: start;
+        }
+
         .video-frame {
             position: relative;
             aspect-ratio: 9 / 16;
+            width: 100%;
             max-width: 360px;
-            margin: 18px auto 0 auto;
+            margin: 0 auto;
             border-radius: 18px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -216,12 +287,33 @@
             border-radius: 16px;
             padding: 20px;
             margin-top: 16px;
+            transition: transform 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
 
         .combo-box.featured {
             border-color: rgba(180, 0, 0, 0.4);
             background: linear-gradient(180deg, rgba(180, 0, 0, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .combo-box.selectable {
+            cursor: pointer;
+        }
+
+        .combo-box.selectable:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        .combo-box.is-selected {
+            border-color: rgba(180, 0, 0, 0.75);
+            background: linear-gradient(180deg, rgba(180, 0, 0, 0.18) 0%, rgba(255, 255, 255, 0.03) 100%);
+            box-shadow: 0 0 0 1px rgba(180, 0, 0, 0.24), 0 18px 34px rgba(0, 0, 0, 0.24);
+        }
+
+        .combo-box:focus-visible {
+            outline: 2px solid rgba(255, 211, 211, 0.85);
+            outline-offset: 3px;
         }
 
         .combo-badge {
@@ -254,6 +346,18 @@
             color: #F1F1F1;
         }
 
+        .combo-choice {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.08);
+            color: #F1F1F1;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .combo-box.is-selected .combo-choice {
+            background: rgba(180, 0, 0, 0.22);
+            color: #FFD3D3;
+        }
+
         .combo-header {
             display: flex;
             justify-content: space-between;
@@ -284,6 +388,14 @@
             color: var(--text-muted);
         }
 
+        .plan-selection-note {
+            margin-top: 14px;
+            margin-bottom: 4px;
+            font-size: 13px;
+            color: #FFD3D3;
+            font-weight: 700;
+        }
+
         .brands-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -300,6 +412,62 @@
 
         .brand-item.featured {
             transform: translateY(-2px);
+        }
+
+        .brands-highlight {
+            display: flex;
+            justify-content: center;
+            margin-top: 18px;
+            margin-bottom: 18px;
+        }
+
+        .brand-item--hero {
+            width: min(100%, 220px);
+        }
+
+        .brand-item--hero .brand-logo-slot {
+            min-height: 112px;
+            border-color: rgba(180, 0, 0, 0.35);
+            background: linear-gradient(180deg, rgba(180, 0, 0, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+        }
+
+        .brand-name {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            color: var(--text-light);
+        }
+
+        .app-callout {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(180, 0, 0, 0.24);
+            background: linear-gradient(180deg, rgba(180, 0, 0, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%);
+            text-align: center;
+        }
+
+        .app-callout-title {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #FFD3D3;
+        }
+
+        .app-callout-link {
+            color: var(--text-light);
+            font-size: 18px;
+            font-weight: 900;
+            text-decoration: none;
+            word-break: break-word;
+        }
+
+        .app-callout-link:hover {
+            text-decoration: underline;
         }
 
         .brand-logo-slot {
@@ -472,6 +640,34 @@
             gap: 12px;
         }
 
+        .floating-whatsapp {
+            position: fixed;
+            right: 16px;
+            bottom: 166px;
+            z-index: 31;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 58px;
+            height: 58px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #25D366 0%, #128C4A 100%);
+            color: #ffffff;
+            box-shadow: 0 18px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+
+        .floating-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 22px 34px rgba(0, 0, 0, 0.34);
+        }
+
+        .floating-whatsapp svg {
+            width: 28px;
+            height: 28px;
+            fill: currentColor;
+        }
+
         .pibes-assistant-button {
             border: 0;
             border-radius: 999px;
@@ -637,6 +833,53 @@
             font-size: 15px;
         }
 
+        .pwa-actions {
+            position: fixed;
+            top: calc(12px + env(safe-area-inset-top));
+            left: 16px;
+            right: 16px;
+            z-index: 45;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .pwa-actions-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pwa-button {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            min-height: 46px;
+            padding: 12px 16px;
+            border: 0;
+            border-radius: 999px;
+            color: var(--text-light);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            box-shadow: 0 16px 28px rgba(0, 0, 0, 0.28);
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .pwa-button.is-visible {
+            display: inline-flex;
+        }
+
+        .pwa-button--install {
+            background: linear-gradient(135deg, #1f8f57 0%, #14663d 100%);
+        }
+
+        .pwa-button--update {
+            background: linear-gradient(135deg, #D60000 0%, #8C0000 100%);
+        }
+
         footer {
             text-align: center;
             font-size: 12px;
@@ -693,9 +936,28 @@
                 max-width: 100%;
             }
 
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .pwa-actions {
+                left: 12px;
+                right: 12px;
+            }
+
+            .pwa-button {
+                width: 100%;
+            }
+
             .pibes-assistant {
                 right: 12px;
                 bottom: 92px;
+            }
+
+            .floating-whatsapp {
+                right: 12px;
+                bottom: 160px;
             }
 
             .pibes-assistant-button {
@@ -709,12 +971,24 @@
         }
     </style>
 </head>
-<body>
+<body class="is-loading">
+
+    <div class="intro-splash" data-intro-splash aria-hidden="true">
+        <img class="intro-splash-logo" src="assets/logos/pibesdebarrio-transparent.png" alt="Logo de Pibes de Barrio">
+    </div>
+
+    <div class="pwa-actions" aria-live="polite">
+        <div class="pwa-actions-row">
+            <button class="pwa-button pwa-button--install" type="button" data-install-app>Instalar app</button>
+            <button class="pwa-button pwa-button--update" type="button" data-update-app>Actualizar app</button>
+        </div>
+    </div>
 
     <div class="container">
         <header>
             <div class="logo-area">
-                <div class="eyebrow">Club 5 de Mayo · Ensenada</div>
+                <img class="hero-logo" src="assets/logos/pibesdebarrio-transparent.png" alt="Logo de Pibes de Barrio">
+                <div class="eyebrow">Ensenada</div>
                 <h1 class="logo-title">Pibes <span>De Barrio</span></h1>
                 <div class="tagline">La juntada de los jueves en Ensenada</div>
                 <p class="hero-lead">Una mesa bien del barrio para mostrar negocios, artistas y proyectos locales con contenido que se mueve de verdad.</p>
@@ -724,7 +998,7 @@
                     <span class="proof-chip">Invitación al estudio</span>
                 </div>
                 <div class="hero-cta">
-                    <a href="https://wa.me/5492215047962?text=Hola%20Braian%2C%20vi%20la%20web%20de%20Pibes%20de%20Barrio%20y%20quiero%20sumarme%20con%20el%20bono%20contribuci%C3%B3n.%20%C2%BFMe%20cont%C3%A1s%20c%C3%B3mo%20arrancamos%3F" class="btn-whatsapp" target="_blank" rel="noopener noreferrer">
+                    <a href="https://wa.me/5492215047962?text=Hola%20Pibes%20quiero%20apoyar%20su%20proyecto%20%21%21" class="btn-whatsapp" target="_blank" rel="noopener noreferrer" data-whatsapp-dynamic>
                         🤝 Quiero sumarme ahora
                     </a>
                 </div>
@@ -734,7 +1008,7 @@
         <section class="card">
             <span class="section-kicker">Quiénes somos</span>
             <h2>El barrio apoya al barrio</h2>
-            <p>¡Hola! Somos Jonatan y Braian. Creamos <strong>Pibes de Barrio</strong> desde el quincho del Club 5 de Mayo con una idea fija: darle pantalla y micrófono a los músicos, artistas y emprendedores de nuestra ciudad que la reman todos los días.</p>
+            <p>¡Hola! Somos Jonatan y Braian. Creamos <strong>Pibes de Barrio</strong> desde Ensenada con una idea fija: darle pantalla y micrófono a los músicos, artistas y emprendedores de nuestra ciudad que la reman todos los días.</p>
             <p>Lanzamos el primer programa y la respuesta de Ensenada fue increíble. Pero para que este espacio siga creciendo y se mantenga en el tiempo, necesitamos hacerlo entre todos. No podemos solos.</p>
         </section>
 
@@ -742,13 +1016,23 @@
             <span class="section-kicker">Video</span>
             <h2>Mirá cómo se vive Pibes de Barrio</h2>
             <p class="video-copy">Esto no es una promesa: es una muestra real de lo que ya pasa en Pibes de Barrio. Mirá el programa desde adentro y entendé en segundos el alcance, la identidad y la energía de la mesa.</p>
-            <div class="video-frame">
-                <iframe
-                    src="https://www.instagram.com/p/DYasYqvOkkF/embed"
-                    title="Reel completo de Instagram de Pibes de Barrio"
-                    loading="lazy"
-                    allowfullscreen>
-                </iframe>
+            <div class="video-grid">
+                <div class="video-frame">
+                    <iframe
+                        src="https://www.instagram.com/p/DYasYqvOkkF/embed"
+                        title="Primer reel de Instagram de Pibes de Barrio"
+                        loading="lazy"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-frame">
+                    <iframe
+                        src="https://www.instagram.com/p/DYfQwUsx1kv/embed"
+                        title="Segundo reel de Instagram de Pibes de Barrio"
+                        loading="lazy"
+                        allowfullscreen>
+                    </iframe>
+                </div>
             </div>
         </section>
 
@@ -762,10 +1046,12 @@
         <section class="card">
             <span class="section-kicker">Planes</span>
             <h2>Formas de Colaborar</h2>
+            <p class="plan-selection-note" data-plan-note>Planes seleccionados: Bono Amigo del Barrio. Es el apoyo base mensual.</p>
             
-            <div class="combo-box">
+            <div class="combo-box selectable is-selected" data-plan-card data-plan-label="Bono Amigo del Barrio" data-plan-detail="Es el apoyo base mensual." data-plan-amount="30000" tabindex="0" role="button" aria-pressed="true">
                 <div class="combo-badges">
-                    <div class="combo-badge selection">Seleccion</div>
+                    <div class="combo-badge">Base mensual</div>
+                    <div class="combo-badge combo-choice">Seleccionado</div>
                 </div>
                 <div class="combo-header">
                     <span class="combo-title">Bono Amigo del Barrio</span>
@@ -779,10 +1065,11 @@
                 <p class="combo-note">Ideal si querés presencia constante en el contenido y un vínculo real con la comunidad.</p>
             </div>
 
-            <div class="combo-box featured">
+            <div class="combo-box featured selectable" data-plan-card data-plan-label="Bono Impulso" data-plan-detail="Es un extra opcional para sumar contenido propio." data-plan-amount="30000" tabindex="0" role="button" aria-pressed="false">
                 <div class="combo-badges">
                     <div class="combo-badge">Recomendado</div>
-                    <div class="combo-badge selection">Seleccion</div>
+                    <div class="combo-badge">Extra opcional</div>
+                    <div class="combo-badge combo-choice">Tocar para elegir</div>
                 </div>
                 <div class="combo-header">
                     <span class="combo-title">Bono Impulso</span>
@@ -795,7 +1082,7 @@
                 </ul>
             </div>
 
-            <a href="https://wa.me/5492215047962?text=Hola%20Braian%2C%20vi%20la%20web%20de%20Pibes%20de%20Barrio%20y%20quiero%20sumarme%20con%20el%20bono%20contribuci%C3%B3n.%20%C2%BFMe%20cont%C3%A1s%20c%C3%B3mo%20arrancamos%3F" class="btn-whatsapp" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/5492215047962?text=Hola%20Pibes%20quiero%20apoyar%20su%20proyecto%20%21%21" class="btn-whatsapp" target="_blank" rel="noopener noreferrer" data-whatsapp-dynamic>
                 🤝 Quiero sumarme por WhatsApp
             </a>
         </section>
@@ -804,6 +1091,15 @@
             <span class="section-kicker">Comunidad</span>
             <h2>Marcas que nos apoyan</h2>
             <p>Estas marcas ya son parte de la mesa.</p>
+
+            <div class="brands-highlight">
+                <article class="brand-item brand-item--hero featured">
+                    <div class="brand-logo-slot">
+                        <img src="assets/logos/estuario.jpg" alt="Logo de Estuario TV">
+                    </div>
+                    <div class="brand-name">Estuario TV</div>
+                </article>
+            </div>
 
             <div class="brands-grid">
                 <article class="brand-item featured">
@@ -883,12 +1179,21 @@
                     </div>
                 </article>
             </div>
+
+            <div class="app-callout">
+                <span class="app-callout-title">Conocé nuestra app</span>
+                <a class="app-callout-link" href="https://www.pibesdebarrio.fun" target="_blank" rel="noopener noreferrer">www.pibesdebarrio.fun</a>
+            </div>
         </section>
 
         <footer>
-            <p>Pibes de Barrio &copy; 2026 - Desde el Club 5 de Mayo, Ensenada.</p>
+            <p>Pibes de Barrio &copy; 2026 - Desde Ensenada.</p>
         </footer>
     </div>
+
+    <a class="floating-whatsapp" href="https://wa.me/5492215047962?text=Hola%20Pibes%20quiero%20apoyar%20su%20proyecto%20%21%21" target="_blank" rel="noopener noreferrer" aria-label="Escribir por WhatsApp a Pibes de Barrio" data-whatsapp-dynamic>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.11 4.93A9.84 9.84 0 0 0 12.09 2C6.64 2 2.2 6.44 2.2 11.89c0 1.75.46 3.46 1.34 4.96L2 22l5.31-1.39a9.8 9.8 0 0 0 4.72 1.2h.01c5.45 0 9.89-4.44 9.89-9.89a9.82 9.82 0 0 0-2.82-6.99zm-7.07 15.2h-.01a8.1 8.1 0 0 1-4.13-1.13l-.3-.18-3.15.83.84-3.07-.2-.31a8.15 8.15 0 0 1-1.26-4.35c0-4.48 3.64-8.12 8.12-8.12 2.17 0 4.2.84 5.74 2.38a8.07 8.07 0 0 1 2.37 5.74c0 4.48-3.64 8.12-8.12 8.12zm4.46-6.07c-.24-.12-1.41-.7-1.63-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.17-.71-.64-1.19-1.43-1.33-1.67-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.29-.74-1.77-.2-.47-.4-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.09 3.62.57.25 1.02.4 1.37.51.58.18 1.11.16 1.53.1.47-.07 1.41-.58 1.61-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z"/></svg>
+    </a>
 
     <div class="pibes-assistant" data-pibes-assistant>
         <div class="pibes-assistant-panel" id="pibes-panel" aria-live="polite">
@@ -907,7 +1212,7 @@
                     <button class="pibes-chip" type="button" data-question="¿Es solo para marcas?">¿Es solo para marcas?</button>
                     <button class="pibes-chip" type="button" data-question="¿Cómo me sumo?">¿Cómo me sumo?</button>
                 </div>
-                <a class="pibes-assistant-link" href="https://wa.me/5492215047962?text=Hola%20Braian%2C%20tengo%20una%20consulta%20sobre%20Pibes%20de%20Barrio" target="_blank" rel="noopener noreferrer">Si necesitás una respuesta directa, hablá por WhatsApp</a>
+                <a class="pibes-assistant-link" href="https://wa.me/5492215047962?text=Hola%20Pibes%20quiero%20apoyar%20su%20proyecto%20%21%21" target="_blank" rel="noopener noreferrer" data-whatsapp-dynamic>Si necesitás una respuesta directa, hablá por WhatsApp</a>
             </div>
             <form class="pibes-assistant-form" data-pibes-form>
                 <input class="pibes-assistant-input" type="text" name="question" placeholder="Escribí tu consulta" autocomplete="off">
@@ -918,13 +1223,209 @@
     </div>
 
     <div class="sticky-cta">
-        <a href="https://wa.me/5492215047962?text=Hola%20Braian%2C%20vi%20la%20web%20de%20Pibes%20de%20Barrio%20y%20quiero%20sumarme%20con%20el%20bono%20contribuci%C3%B3n.%20%C2%BFMe%20cont%C3%A1s%20c%C3%B3mo%20arrancamos%3F" class="btn-whatsapp" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.me/5492215047962?text=Hola%20Pibes%20quiero%20apoyar%20su%20proyecto%20%21%21" class="btn-whatsapp" target="_blank" rel="noopener noreferrer" data-whatsapp-dynamic>
             🤝 Hablar por WhatsApp
         </a>
     </div>
 
     <script>
         (function () {
+            var splash = document.querySelector('[data-intro-splash]');
+            var planCards = document.querySelectorAll('[data-plan-card]');
+            var planNote = document.querySelector('[data-plan-note]');
+            var whatsappLinks = document.querySelectorAll('[data-whatsapp-dynamic]');
+            var installButton = document.querySelector('[data-install-app]');
+            var updateButton = document.querySelector('[data-update-app]');
+            var whatsappBase = 'https://wa.me/5492215047962?text=';
+            var deferredInstallPrompt = null;
+            var waitingWorker = null;
+            var isRefreshing = false;
+
+            function hideSplash() {
+                if (!splash) {
+                    document.body.classList.remove('is-loading');
+                    return;
+                }
+
+                splash.classList.add('is-hidden');
+                document.body.classList.remove('is-loading');
+            }
+
+            window.setTimeout(hideSplash, 1200);
+
+            function togglePwaButton(button, isVisible) {
+                if (!button) {
+                    return;
+                }
+
+                button.classList.toggle('is-visible', Boolean(isVisible));
+            }
+
+            function isStandaloneMode() {
+                return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            }
+
+            function showUpdateButton(worker) {
+                waitingWorker = worker;
+                togglePwaButton(updateButton, true);
+            }
+
+            if (isStandaloneMode()) {
+                togglePwaButton(installButton, false);
+            }
+
+            window.addEventListener('beforeinstallprompt', function (event) {
+                if (isStandaloneMode()) {
+                    return;
+                }
+
+                event.preventDefault();
+                deferredInstallPrompt = event;
+                togglePwaButton(installButton, true);
+            });
+
+            window.addEventListener('appinstalled', function () {
+                deferredInstallPrompt = null;
+                togglePwaButton(installButton, false);
+            });
+
+            if (installButton) {
+                installButton.addEventListener('click', function () {
+                    if (!deferredInstallPrompt) {
+                        return;
+                    }
+
+                    deferredInstallPrompt.prompt();
+                    deferredInstallPrompt.userChoice.finally(function () {
+                        deferredInstallPrompt = null;
+                        togglePwaButton(installButton, false);
+                    });
+                });
+            }
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.addEventListener('controllerchange', function () {
+                    if (isRefreshing) {
+                        return;
+                    }
+
+                    isRefreshing = true;
+                    window.location.reload();
+                });
+
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('./sw.js').then(function (registration) {
+                        if (registration.waiting) {
+                            showUpdateButton(registration.waiting);
+                        }
+
+                        registration.addEventListener('updatefound', function () {
+                            var newWorker = registration.installing;
+
+                            if (!newWorker) {
+                                return;
+                            }
+
+                            newWorker.addEventListener('statechange', function () {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    showUpdateButton(newWorker);
+                                }
+                            });
+                        });
+                    }).catch(function () {
+                        togglePwaButton(updateButton, false);
+                    });
+                });
+            }
+
+            if (updateButton) {
+                updateButton.addEventListener('click', function () {
+                    if (!waitingWorker) {
+                        return;
+                    }
+
+                    waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+                    togglePwaButton(updateButton, false);
+                });
+            }
+
+            function formatAmount(amount) {
+                return '$' + amount.toLocaleString('es-AR');
+            }
+
+            function buildWhatsappMessage(selectedCards) {
+                var totalAmount = selectedCards.reduce(function (total, card) {
+                    return total + Number(card.getAttribute('data-plan-amount') || 0);
+                }, 0);
+
+                if (selectedCards.length === 0) {
+                    return 'Hola Pibes quiero apoyar su proyecto !!';
+                }
+
+                if (selectedCards.length === 1) {
+                    return 'Hola Pibes quiero apoyar su proyecto con ' + selectedCards[0].getAttribute('data-plan-label') + ' por ' + formatAmount(totalAmount) + ' !!';
+                }
+
+                return 'Hola Pibes quiero apoyar su proyecto con Bono Amigo del Barrio y Bono Impulso por un total de ' + formatAmount(totalAmount) + ' !!';
+            }
+
+            function updateWhatsappLinks(selectedCards) {
+                var message = buildWhatsappMessage(selectedCards);
+                var href = whatsappBase + encodeURIComponent(message);
+
+                whatsappLinks.forEach(function (link) {
+                    link.setAttribute('href', href);
+                });
+            }
+
+            function updateSelectedPlan() {
+                var selectedCards = [];
+
+                planCards.forEach(function (card) {
+                    var isSelected = card.classList.contains('is-selected');
+                    var choice = card.querySelector('.combo-choice');
+
+                    card.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+
+                    if (choice) {
+                        choice.textContent = isSelected ? 'Seleccionado' : 'Tocar para elegir';
+                    }
+
+                    if (isSelected) {
+                        selectedCards.push(card);
+                    }
+                });
+
+                if (planNote) {
+                    if (selectedCards.length === 0) {
+                        planNote.textContent = 'No hay planes seleccionados todavía. Podés marcar el apoyo base, el extra opcional o ambos.';
+                    } else if (selectedCards.length === 1) {
+                        planNote.textContent = 'Planes seleccionados: ' + selectedCards[0].getAttribute('data-plan-label') + '. ' + selectedCards[0].getAttribute('data-plan-detail');
+                    } else {
+                        planNote.textContent = 'Planes seleccionados: Bono Amigo del Barrio y Bono Impulso. Elegiste el apoyo base junto con el extra opcional.';
+                    }
+                }
+
+                updateWhatsappLinks(selectedCards);
+            }
+
+            planCards.forEach(function (card) {
+                card.addEventListener('click', function () {
+                    card.classList.toggle('is-selected');
+                    updateSelectedPlan();
+                });
+
+                card.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        card.classList.toggle('is-selected');
+                        updateSelectedPlan();
+                    }
+                });
+            });
+
+            updateSelectedPlan();
+
             var assistant = document.querySelector('[data-pibes-assistant]');
 
             if (!assistant) {
@@ -948,8 +1449,8 @@
                     answer: 'Sí. No es un espacio cerrado ni exclusivo para marcas grandes. La idea es abrir micrófono y pantalla a gente real del barrio que quiera conectar con la comunidad.'
                 },
                 {
-                    triggers: ['lugar', 'acercar', 'acercarme', 'club', '5 de mayo', 'direccion', 'caer'],
-                    answer: 'Sí, te podés acercar al Club 5 de Mayo en Ensenada. Si querés ir un jueves o coordinar una visita, escribinos por WhatsApp así te confirmamos el mejor momento.'
+                    triggers: ['lugar', 'acercar', 'acercarme', 'ensenada', 'direccion', 'caer'],
+                    answer: 'Sí, te podés acercar en Ensenada. Si querés ir un jueves o coordinar una visita, escribinos por WhatsApp así te confirmamos el mejor momento.'
                 },
                 {
                     triggers: ['marca', 'negocio', 'emprendimiento', 'solo para marcas'],
